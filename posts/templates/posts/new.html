@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block head_title %} New post {% endblock %}
+
+{% block main_title %} New post {% endblock %}
+
+{% block nav %}
+<hr>
+<a href="{% url 'home' %}">Home</a> |
+   {% if user.is_authenticated %}
+       <a href="{% url 'logout' %}">Logout</a>
+   {% else %}
+       <a href="{% url 'login' %}">Login</a>
+   {% endif %}
+<hr>
+{% endblock %}
+
+{% block main_content %}
+    {% for message in messages %}
+        <p style="color:green">{{ message }}</p>
+    {% endfor %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save post</button>
+    </form>
+{% endblock %}

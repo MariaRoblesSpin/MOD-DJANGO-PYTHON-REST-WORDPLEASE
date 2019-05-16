@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block main_title %} Wordplease {% endblock %}
+
+{% block nav %}
+<hr>
+<a href="{% url 'home' %}">Home</a> |
+{% if user.is_authenticated %}
+   <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+   <a href="{% url 'login' %}">Login</a>
+{% endif %} |
+<a href="{% url 'new_post' %}">New post</a>
+<hr>
+{% endblock %}
+{% block main_content %}
+    <h2>All posts</h2>
+    {% for post in object_list %}
+       <p>
+           <img src="{{ post.url }}" alt="{{ post.text }}" title="{{ post.title }}" height="40" width="80"> &nbsp; {{ post.title }} &nbsp; {{ post.text }} &nbsp; {{ post.user}}
+           <a href="{% url 'post_detail' post.pk %}">Ver detalles</a>
+       </p>
+    {% endfor %}
+    <a href="{% url 'home' %}">Ver los 5 últimos posts</a>
+{% endblock %}
