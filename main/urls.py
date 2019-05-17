@@ -30,7 +30,7 @@ urlpatterns = [
     path('all_posts', PostsListView.as_view(), name='post_list'),
     path('post/new/', new_post, name='new_post'),
     path('post/<int:pk>/', post_detail, name='post_detail'),
-    path('blogs/', LatestPostsView.as_view(), name='home')
+    path('', LatestPostsView.as_view(), name='home')
 
 
 ]

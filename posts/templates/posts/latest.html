@@ -15,7 +15,7 @@
 {% endblock %}
 {% block main_content %}
     <h2>Latest posts</h2>
-    {% for post in blogs %}
+    {% for post in posts %}
        <p>
            <img src="{{ post.url }}" alt="{{ post.text }}" title="{{ post.title }}" height="40" width="80"> &nbsp; {{ post.title }} &nbsp; {{ post.text }} &nbsp; {{ post.user}}
            <a href="{% url 'post_detail' post.pk %}">Ver detalles</a>

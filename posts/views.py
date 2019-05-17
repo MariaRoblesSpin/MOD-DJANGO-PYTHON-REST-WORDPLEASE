@@ -11,19 +11,19 @@ from posts.forms import PostForm
 from posts.models import Post
 
 
-class LatestPostsView(LoginRequiredMixin, View):
+class LatestPostsView(View):
 
     def get(self, request):
         # Recuperar los últimas post de la base de datos del usuario autenticado
-        if self.request.user.is_superuser:
-            post = Post.objects.all().order_by('-modification_date')
-        else:
+        if self.request.user.is_authenticated:
             post = Post.objects.filter(user_id=request.user.id).order_by('-modification_date')
+        else:
+            post = Post.objects.all().order_by('-modification_date')
 
         # Creamos el contexto para pasarle los posts a la plantilla y la pk del usuario
         # para que solo se muestren los post del usuario autenticado
 
-        context = {'blogs': post[:5]}
+        context = {'posts': post[:5]}
 
         # Crear respuesta HTML con los post
         html = render(request, 'posts/latest.html', context)
