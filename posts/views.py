@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.http import HttpResponse, request
 from django.shortcuts import render, get_object_or_404
 from django.views import View
@@ -75,3 +76,14 @@ class PostsListView(ListView):
         return queryset
 
 
+class BlogsListView(ListView):
+
+    template_name = 'posts/blogs.html'
+    model = User
+
+    # def get_queryset(self):
+    #    if self.request.user.is_authenticated:
+    #        queryset = Post.objects.filter(user_id=self.request.user.id).order_by('-modification_date')
+    #    else:
+    #        queryset = Post.objects.all().order_by('-modification_date')
+    #    return queryset
