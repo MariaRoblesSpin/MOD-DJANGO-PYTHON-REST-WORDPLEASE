@@ -68,10 +68,10 @@ class PostsListView(ListView):
     # model = Post
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
-            queryset = Post.objects.all().order_by('-modification_date')
-        else:
+        if self.request.user.is_authenticated:
             queryset = Post.objects.filter(user_id=self.request.user.id).order_by('-modification_date')
+        else:
+            queryset = Post.objects.all().order_by('-modification_date')
         return queryset
 
 
