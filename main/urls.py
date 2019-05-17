@@ -26,15 +26,17 @@ urlpatterns = [
     path('login', login, name='login'),
     path('logout', logout, name='logout'),
 
-    # blogs
-    path('blogs', BlogsListView.as_view(), name='blogs'),
-
     # posts
+    path('blogs/<str:name>/<int:pk>/', post_detail, name='post_detail'),
     path('blogs/<str:name>/', UserPostsView.as_view(), name='blog_user'),
     path('all_posts', PostsListView.as_view(), name='post_list'),
     path('post/new/', new_post, name='new_post'),
-    path('post/<int:pk>/', post_detail, name='post_detail'),
+
+    # blogs
+    path('blogs', BlogsListView.as_view(), name='blogs'),
+
     path('', LatestPostsView.as_view(), name='home')
+
 
 
 ]

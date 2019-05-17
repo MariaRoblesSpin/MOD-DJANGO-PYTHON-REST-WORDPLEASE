@@ -32,7 +32,7 @@ class LatestPostsView(View):
         return HttpResponse(html)
 
 
-def post_detail(request, pk):
+def post_detail(request, pk, name):
     # Recuperar los detalles del post seleccionadd de la BD
     post = get_object_or_404(Post.objects.select_related('user'), pk=pk)
 
