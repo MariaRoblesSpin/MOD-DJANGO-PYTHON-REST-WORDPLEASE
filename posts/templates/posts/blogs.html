@@ -17,8 +17,16 @@
     <h2>Blogs</h2>
     {% for user in object_list %}
        <p>
-           {{ user.first_name }} {{ user.last_name }} <a href="/blogs/{{ user.first_name }}">Ver blog</a>
+           {{ user.first_name }} {{ user.last_name }}
+           <form action="/blogs/{{ user.first_name }}/" method="post" >
+           {% csrf_token %}
+               <input type="hidden" name="id" value="{{ user.id }}">
+               <input type="submit" value="Ver blog">
+           </form>
        </p>
     {% endfor %}
+
+
+
 
 {% endblock %}

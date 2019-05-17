@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block main_title %} Wordplease {% endblock %}
+
+{% block nav %}
+<hr>
+<a href="{% url 'home' %}">Home</a> |
+{% if user.is_authenticated %}
+   <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+   <a href="{% url 'login' %}">Login</a>
+{% endif %} |
+<a href="{% url 'new_post' %}">New post</a> |
+{% if not user.is_authenticated %}
+   <a href="{% url 'blogs' %}">Blogs</a>
+{% endif %}
+<hr>
+{% endblock %}
+{% block main_content %}
+    <h2>Posts {{request.user.first_name}}</h2>
+    {% for post in posts %}
+       <p>
+           <img src="{{ post.url }}" alt="{{ post.text }}" title="{{ post.title }}" height="40" width="80"> &nbsp; {{ post.title }} &nbsp; {{ post.text }} &nbsp; {{ post.user}}
+           <a href="{% url 'post_detail' post.pk %}">Ver detalles</a>
+       </p>
+    {% endfor %}
+{% endblock %}

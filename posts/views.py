@@ -1,7 +1,6 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse, request
 from django.shortcuts import render, get_object_or_404
@@ -15,7 +14,7 @@ from posts.models import Post
 class LatestPostsView(View):
 
     def get(self, request):
-        # Recuperar los últimas post de la base de datos del usuario autenticado
+        # Recuperar los últimos post de la base de datos del usuario autenticado
         if self.request.user.is_authenticated:
             post = Post.objects.filter(user_id=request.user.id).order_by('-modification_date')
         else:
@@ -32,7 +31,7 @@ class LatestPostsView(View):
         # Devolver la respuesta HTTP
         return HttpResponse(html)
 
-@login_required
+
 def post_detail(request, pk):
     # Recuperar los detalles del post seleccionadd de la BD
     post = get_object_or_404(Post.objects.select_related('user'), pk=pk)
@@ -81,9 +80,22 @@ class BlogsListView(ListView):
     template_name = 'posts/blogs.html'
     model = User
 
-    # def get_queryset(self):
-    #    if self.request.user.is_authenticated:
-    #        queryset = Post.objects.filter(user_id=self.request.user.id).order_by('-modification_date')
-    #    else:
-    #        queryset = Post.objects.all().order_by('-modification_date')
-    #    return queryset
+
+class UserPostsView(View):
+
+    @staticmethod
+    def post(request, name):
+        # Recuperar los posts del usuario seleccionado. La clave del usuario seleccionado se envió
+        # desde /blogs por método POST
+
+        post = Post.objects.filter(user_id=request.POST.get('id')).order_by('-modification_date')
+
+        # Creamos el contexto para pasarle los posts a la plantilla
+
+        context = {'posts': post}
+
+        # Crear respuesta HTML con los post
+        html = render(request, 'posts/posts_user.html', context)
+
+        # Devolver la respuesta HTTP
+        return HttpResponse(html)
