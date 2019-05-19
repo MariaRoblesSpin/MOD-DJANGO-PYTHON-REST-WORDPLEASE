@@ -51,6 +51,7 @@ def new_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
+            # Para incluir el id del autor del post. Este se pone por programa y es el de el usuario autenticado.
             new_post = form.save(commit=False)
             new_post.user_id = request.user.id
             new_post.save()
@@ -65,7 +66,7 @@ def new_post(request):
 class PostsListView(ListView):
 
     template_name = 'posts/list.html'
-    # model = Post
+    model = Post
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
