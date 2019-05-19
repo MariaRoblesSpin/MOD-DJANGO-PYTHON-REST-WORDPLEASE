@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -18,6 +19,7 @@ class Post(models.Model):
     modification_date = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
+    fecha_publicacion = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return self.title

@@ -1,3 +1,4 @@
+from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -16,9 +17,9 @@ class LatestPostsView(View):
     def get(self, request):
         # Recuperar los últimos post de la base de datos del usuario autenticado
         if self.request.user.is_authenticated:
-            post = Post.objects.filter(user_id=request.user.id).order_by('-modification_date')
+            post = Post.objects.filter(user_id=request.user.id, fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
         else:
-            post = Post.objects.all().order_by('-modification_date')
+            post = Post.objects.filter(fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
 
         # Creamos el contexto para pasarle los posts a la plantilla y la pk del usuario
         # para que solo se muestren los post del usuario autenticado
@@ -70,9 +71,9 @@ class PostsListView(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            queryset = Post.objects.filter(user_id=self.request.user.id).order_by('-modification_date')
+            queryset = Post.objects.filter(user_id=self.request.user.id, fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
         else:
-            queryset = Post.objects.all().order_by('-modification_date')
+            queryset = Post.objects.filter(fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
         return queryset
 
 
@@ -89,7 +90,7 @@ class UserPostsView(View):
         # Recuperar los posts del usuario seleccionado. La clave del usuario seleccionado se envió
         # desde /blogs por método POST
 
-        post = Post.objects.filter(user_id=request.POST.get('id')).order_by('-modification_date')
+        post = Post.objects.filter(user_id=request.POST.get('id'), fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
 
         # Creamos el contexto para pasarle los posts a la plantilla
 
