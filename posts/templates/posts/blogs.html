@@ -2,17 +2,6 @@
 
 {% block main_title %} Wordplease {% endblock %}
 
-{% block nav %}
-<hr>
-<a href="{% url 'home' %}">Home</a> |
-{% if user.is_authenticated %}
-   <a href="{% url 'logout' %}">Logout</a>
-{% else %}
-   <a href="{% url 'login' %}">Login</a>
-{% endif %} |
-<a href="{% url 'new_post' %}">New post</a>
-<hr>
-{% endblock %}
 {% block main_content %}
     <h2>Blogs</h2>
     {% for user in object_list %}
