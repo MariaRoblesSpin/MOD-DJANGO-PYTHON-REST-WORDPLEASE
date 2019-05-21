@@ -13,7 +13,7 @@ class PostPermission(BasePermission):
             return request.method == 'GET' or request.user.is_authenticated
         if request.method == 'POST':
             return request.POST.get('user') == str(request.user.id)
-        if request.method == 'PUT' or 'DELETE':
+        if request.method == 'PUT' or request.method == 'DELETE':
             return True
 
     def has_object_permission(self, request, view, obj):
@@ -22,5 +22,5 @@ class PostPermission(BasePermission):
                 return True
             else:
                 return obj.fecha_publicacion <= now
-        if request.method == 'PUT' or 'DELETE':
+        if request.method == 'PUT' or request.method == 'DELETE':
             return obj.user == request.user or request.user.is_superuser

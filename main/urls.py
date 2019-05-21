@@ -18,6 +18,7 @@ from django.urls import path
 
 from posts.api import PostsAPI, PostDetailAPI
 from posts.views import post_detail, new_post, LatestPostsView, PostsListView, BlogsListView, UserPostsView
+from users.api import UserDetailAPI, UserAPI
 from users.views import login, logout, SignUpFormView
 
 urlpatterns = [
@@ -42,7 +43,10 @@ urlpatterns = [
 
     # API
     path('api/posts/<int:pk>', PostDetailAPI.as_view(), name='post_detail_api'),
-    path('api/posts/<str:name>', PostsAPI.as_view(), name='posts_api')
+    path('api/posts/<str:name>', PostsAPI.as_view(), name='posts_api'),
+
+    path('api/users/<int:pk>', UserDetailAPI.as_view(), name='user_detail_api'),
+    path('api/users', UserAPI.as_view(), name='posts_api')
 
 
 ]
