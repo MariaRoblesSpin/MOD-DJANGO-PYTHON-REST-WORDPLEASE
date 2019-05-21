@@ -64,17 +64,25 @@ def new_post(request):
     return render(request, 'posts/new.html', context)
 
 
-class PostsListView(ListView):
-
-    template_name = 'posts/list.html'
-    model = Post
+class PostsList(object):
 
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            queryset = Post.objects.filter(user_id=self.request.user.id, fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
+        if self.kwargs.get('name') is not None:
+            if self.request.user.is_authenticated and self.request.user.username == self.kwargs.get('name'):
+                queryset = Post.objects.filter(user_id=self.request.user.id).order_by('-modification_date')
+            elif self.request.user.is_superuser:
+                queryset = Post.objects.filter(user__username=self.kwargs.get('name')).order_by('-modification_date')
+            else:
+                queryset = Post.objects.filter(user__username=self.kwargs.get('name'), fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
         else:
-            queryset = Post.objects.filter(fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
+            queryset = Post.objects.filter(pk=self.kwargs.get('pk'))
         return queryset
+
+
+class PostsListView(PostsList, ListView):
+
+    template_name = 'posts/list.html'
+    # model = Post
 
 
 class BlogsListView(ListView):

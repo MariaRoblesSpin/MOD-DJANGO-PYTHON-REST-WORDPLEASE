@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from posts.api import PostsAPI, PostDetailAPI
 from posts.views import post_detail, new_post, LatestPostsView, PostsListView, BlogsListView, UserPostsView
 from users.views import login, logout, SignUpFormView
 
@@ -37,7 +38,12 @@ urlpatterns = [
     path('blogs', BlogsListView.as_view(), name='blogs'),
 
     # home
-    path('', LatestPostsView.as_view(), name='home')
+    path('', LatestPostsView.as_view(), name='home'),
+
+    # API
+    path('api/posts/<int:pk>', PostDetailAPI.as_view(), name='post_detail_api'),
+    path('api/posts/<str:name>', PostsAPI.as_view(), name='posts_api')
+
 
 ]
 
