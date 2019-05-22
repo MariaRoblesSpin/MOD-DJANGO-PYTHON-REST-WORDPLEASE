@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from users.permissions import UserPermission
 from users.serializers import UserListSerializer, UserSerializer, WriteUserSerializer
@@ -20,10 +18,6 @@ class UserAPI(ListCreateAPIView):
     ordering_fields = ['username']
 
     def get_queryset(self):
-        """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
-        """
         queryset = User.objects.all()
         username = self.request.query_params.get('search', None)
         if username is not None:

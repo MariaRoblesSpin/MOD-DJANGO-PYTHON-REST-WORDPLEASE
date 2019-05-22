@@ -5,6 +5,7 @@ from posts.models import Post
 
 
 class PostForm(ModelForm):
+    # Formulario para recoger los datos de un nuevo Post. Incluye validación para no permitir palabrotas en el body.
 
     class Meta:
         model = Post

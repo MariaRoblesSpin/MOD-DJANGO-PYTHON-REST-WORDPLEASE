@@ -8,6 +8,7 @@ now = timezone.now()
 
 class PostPermission(BasePermission):
 
+    # Controlando que usuarios pueden hacer que cosas
     def has_permission(self, request, view):
         if request.method == 'GET':
             return request.method == 'GET' or request.user.is_authenticated

@@ -13,16 +13,14 @@ from posts.models import Post
 
 
 class LatestPostsView(View):
-
+    # Devolviendo una lista de los 5 post mas recientemente publicados. Difiere para usuarios autenticados y no autenticados
     def get(self, request):
-        # Recuperar los últimos post de la base de datos del usuario autenticado
         if self.request.user.is_authenticated:
             post = Post.objects.filter(user_id=request.user.id, fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
         else:
             post = Post.objects.filter(fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
 
-        # Creamos el contexto para pasarle los posts a la plantilla y la pk del usuario
-        # para que solo se muestren los post del usuario autenticado
+        # Creamos el contexto para pasarle los posts a la plantilla y la pk del usuario. Solo se muestran los 5 primeros
 
         context = {'posts': post[:5]}
 
@@ -32,9 +30,11 @@ class LatestPostsView(View):
         # Devolver la respuesta HTTP
         return HttpResponse(html)
 
+# Mostrando los detalles de un Post
+
 
 def post_detail(request, pk, name):
-    # Recuperar los detalles del post seleccionadd de la BD
+    # Recuperar los detalles del post seleccionado de la BD
     post = get_object_or_404(Post.objects.select_related('user'), pk=pk)
 
     # Crear un contexto para pasar la información del post a la plantilla
@@ -46,7 +46,7 @@ def post_detail(request, pk, name):
     # Devolver respuesta HTTP
     return HttpResponse(html)
 
-
+# Creando un post y evitando que se pueda usar la URL desde el navegador
 @login_required
 def new_post(request):
     if request.method == 'POST':
@@ -64,42 +64,35 @@ def new_post(request):
     return render(request, 'posts/new.html', context)
 
 
-class PostsList(object):
-
-    def get_queryset(self):
-        if self.kwargs.get('name') is not None:
-            if self.request.user.is_authenticated and self.request.user.username == self.kwargs.get('name'):
-                queryset = Post.objects.filter(user_id=self.request.user.id).order_by('-modification_date')
-            elif self.request.user.is_superuser:
-                queryset = Post.objects.filter(user__username=self.kwargs.get('name')).order_by('-modification_date')
-            else:
-                queryset = Post.objects.filter(user__username=self.kwargs.get('name'), fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
-        else:
-            queryset = Post.objects.filter(pk=self.kwargs.get('pk'))
-        return queryset
-
-
-class PostsListView(PostsList, ListView):
+# Mostrar todos los post, en vez de los 5 más recientes
+class PostsListView(ListView):
 
     template_name = 'posts/list.html'
     # model = Post
 
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            queryset = Post.objects.filter(fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
+        elif self.request.user.is_superuser:
+            queryset = Post.objects.all().order_by('-modification_date')
+        else:
+            queryset = Post.objects.filter(user_id=self.request.user.id).order_by('-modification_date')
+        return queryset
 
+
+# Mostrar los blogs que hay en la plataforma
 class BlogsListView(ListView):
 
     template_name = 'posts/blogs.html'
     model = User
 
-
+# Mostrar los post publicados de un blog
 class UserPostsView(View):
 
-    @staticmethod
-    def post(request, name):
-        # Recuperar los posts del usuario seleccionado. La clave del usuario seleccionado se envió
-        # desde /blogs por método POST
+    def get(self, request, name):
+        # Recuperar los posts del usuario seleccionado.
 
-        post = Post.objects.filter(user_id=request.POST.get('id'), fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
-
+        post = Post.objects.filter(user__username=name, fecha_publicacion__lte=datetime.now()).order_by('-modification_date')
         # Creamos el contexto para pasarle los posts a la plantilla
 
         context = {'posts': post}
