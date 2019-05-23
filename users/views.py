@@ -49,6 +49,7 @@ class SignUpFormView(View):
         if form.is_valid():
             new_user = form.save(commit=False)
             new_user.username = self.request.POST.get('first_name')
+            new_user.set_password(self.request.POST.get('password'))
             new_user.save()
             messages.success(request, 'User registered sucessfully')
             return redirect('home')

@@ -36,6 +36,7 @@ class UserAPI(ListCreateAPIView):
         serializer = WriteUserSerializer(data=request.data)
         if serializer.is_valid():
             new_user = serializer.save()
+            new_user.set_password(self.request.POST.get('password'))
             user_serializer = UserSerializer(new_user)
             return Response(user_serializer.data, status=status.HTTP_201_CREATED)
         else:
