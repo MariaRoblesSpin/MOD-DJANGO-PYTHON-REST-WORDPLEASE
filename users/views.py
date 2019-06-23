@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as django_login, logout as django_logout
 from django.views import View
+from django.contrib.auth.models import User
 
 from users.forms import LoginForm, SignUpForm
 
@@ -47,14 +48,17 @@ class SignUpFormView(View):
     def post(self, request):
         form = SignUpForm(self.request.POST)
         if form.is_valid():
-            new_user = form.save(commit=False)
-            new_user.username = self.request.POST.get('first_name')
-            new_user.set_password(self.request.POST.get('password'))
-            new_user.save()
-            messages.success(request, 'User registered sucessfully')
-            return redirect('home')
-        else:
-            messages.error(request, 'Usuario no registrado')
+            username = self.request.POST.get('first_name')
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'This user already exists')
+            else:
+                new_user = form.save(commit=False)
+                new_user.username = self.request.POST.get('first_name')
+                new_user.set_password(self.request.POST.get('password'))
+                new_user.save()
+                messages.success(request, 'User registered successfully')
+                return redirect('home')
+
         context = {'form': form}
         return render(request, 'users/signup.html', context)
 
